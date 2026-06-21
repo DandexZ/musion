@@ -672,7 +672,7 @@ body {
     loadingContainer.style.opacity = 1;
     loadingText.classList.remove('loaded');
     loadingBar.style.width = '0%';
-    loadingText.textContent = '从 CDN 下载音色...';
+    loadingText.textContent = '加载音色文件...';
 
     MIDI.loadPlugin({
       soundfontUrl: SOUNDFONT_URL,
@@ -684,6 +684,9 @@ body {
         loadingText.textContent = '加载中... ' + pct + '%';
       },
       onsuccess: function() {
+        // 切换通道乐器号，确保发音用新音色
+        var program = MIDI.GM.byName[inst].number;
+        MIDI.programChange(0, program);
         loadingBar.style.width = '100%';
         loadingText.textContent = '✓ 完成';
         loadingText.classList.add('loaded');
