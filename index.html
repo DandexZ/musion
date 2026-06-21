@@ -512,6 +512,7 @@ body {
     blackKeysEl.innerHTML = '';
 
     var whiteKeyWidth = 60;
+    var keyStep = whiteKeyWidth - 1; // margin-right: -1px 导致有效步进 59px
 
     // White keys
     for (var n = startNote; n <= endNote; n++) {
@@ -556,7 +557,7 @@ body {
       var bel = document.createElement('div');
       bel.className = 'black-key';
       bel.dataset.note = n2;
-      bel.style.left = (whiteIdx * whiteKeyWidth + whiteKeyWidth - 19) + 'px';
+      bel.style.left = (whiteIdx * keyStep + keyStep - 19) + 'px';
 
       var keyLabel = getKeyLabel(n2, startNote);
       if (keyLabel) {
