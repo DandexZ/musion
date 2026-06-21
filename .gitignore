@@ -1,0 +1,3 @@
+# Soundfont JS files - large binary data, download separately
+soundfont/FluidR3_GM/*.js
+soundfont/FluidR3_GM/*.js.gz
