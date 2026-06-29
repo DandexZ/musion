@@ -18,16 +18,34 @@
 <!-- utils -->
 <script src="lib/js/util/dom_request_xhr.js"></script>
 <script src="lib/js/util/dom_request_script.js"></script>
-<style>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* CRT Scanline overlay */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.06) 2px,
+    rgba(0,0,0,0.06) 4px
+  );
+  pointer-events: none;
+  z-index: 999;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  font-family: 'Press Start 2P', monospace;
+  background: linear-gradient(135deg, #1a1a3e 0%, #2d1b4e 30%, #1e2a5e 60%, #1a1a3e 100%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -35,76 +53,134 @@ body {
   justify-content: center;
   user-select: none;
   -webkit-user-select: none;
-  padding: 20px;
+  padding: 76px 20px 20px;
+  box-shadow: inset 0 0 80px rgba(107,197,255,0.05);
 }
 
 .header {
   text-align: center;
   margin-bottom: 20px;
+  position: relative;
+  padding: 14px 24px;
+  border: 3px solid #FF6B9D;
+  background: rgba(26,26,62,0.7);
+  box-shadow:
+    0 0 12px rgba(255,107,157,0.3),
+    inset 0 0 20px rgba(107,197,255,0.08);
 }
+.header::before, .header::after {
+  content: '◆';
+  position: absolute;
+  color: #6BC5FF;
+  font-size: 10px;
+  text-shadow: 0 0 6px rgba(107,197,255,0.6);
+}
+.header::before { top: -8px; left: 12px; }
+.header::after { bottom: -8px; right: 12px; }
 
 .header h1 {
-  color: #e2e8f0;
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  color: #FF85B3;
+  font-size: 22px;
+  letter-spacing: 3px;
+  text-shadow:
+    0 0 10px rgba(255,107,157,0.5),
+    3px 3px 0 #2d1b4e,
+    -1px -1px 0 rgba(107,197,255,0.3);
 }
-
 .header h1 span {
-  background: linear-gradient(135deg, #f093fb, #f5576c);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #6BC5FF;
+  text-shadow:
+    0 0 10px rgba(107,197,255,0.5),
+    3px 3px 0 #2d1b4e;
 }
 
 .header .subtitle {
-  color: #8899aa;
-  font-size: 12px;
-  margin-top: 4px;
+  color: #C084FC;
+  font-size: 8px;
+  margin-top: 10px;
   letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(192,132,252,0.3);
 }
 
 #loading-bar-container {
-  width: 400px;
+  width: 340px;
   max-width: 80vw;
-  height: 3px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 3px;
-  margin: 12px auto;
+  height: 14px;
+  background: #2a1a3e;
+  border: 3px solid #FF6B9D;
+  margin: 14px auto 0;
   overflow: hidden;
   transition: opacity 0.4s;
+  box-shadow: 0 0 8px rgba(255,107,157,0.25);
+  padding: 2px;
 }
 
 #loading-bar {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #f093fb, #f5576c, #4facfe);
-  border-radius: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    #6BC5FF 0px, #FF6B9D 8px,
+    #6BC5FF 8px, #FF6B9D 16px
+  );
   transition: width 0.2s ease;
+  image-rendering: pixelated;
 }
 
 #loading-text {
-  color: #8899aa;
-  font-size: 12px;
+  color: #B3E4FF;
+  font-size: 8px;
   text-align: center;
-  margin-top: 6px;
+  margin-top: 8px;
+  text-shadow: 0 0 6px rgba(107,197,255,0.3);
 }
+#loading-text.loaded { color: #FF85B3; text-shadow: 0 0 6px rgba(255,133,179,0.5); }
 
-#loading-text.loaded { color: #4facfe; }
-
-/* Piano container */
+/* Piano container — 8-bit console frame */
 .piano-container {
   position: relative;
-  padding: 25px 20px 15px;
-  background: linear-gradient(180deg, #1e1e2f 0%, #12121a 100%);
-  border-radius: 14px;
+  padding: 28px 18px 18px;
+  background: linear-gradient(180deg, #1e1a3e 0%, #16122a 100%);
+  border: 4px solid #6BC5FF;
   box-shadow:
-    0 20px 60px rgba(0,0,0,0.5),
-    0 0 0 1px rgba(255,255,255,0.05),
-    inset 0 1px 0 rgba(255,255,255,0.08);
+    0 0 20px rgba(107,197,255,0.2),
+    inset 0 0 30px rgba(0,0,0,0.6);
   overflow-x: auto;
   max-width: 100%;
+}
+
+/* 8-bit corner pixels */
+.piano-container::before {
+  content: '';
+  position: absolute;
+  top: -6px; left: -6px;
+  width: 12px; height: 12px;
+  background: #FF6B9D;
+  box-shadow: 0 0 8px rgba(255,107,157,0.5);
+}
+.piano-container::after {
+  content: '';
+  position: absolute;
+  top: -6px; right: -6px;
+  width: 12px; height: 12px;
+  background: #6BC5FF;
+  box-shadow: 0 0 8px rgba(107,197,255,0.5);
+}
+
+/* Retro brand label on frame */
+.piano-container .brand-tag {
+  position: absolute;
+  top: -12px; left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a3e;
+  padding: 2px 12px;
+  border: 2px solid #FF6B9D;
+  color: #FF85B3;
+  font-size: 7px;
+  letter-spacing: 3px;
+  z-index: 5;
+  white-space: nowrap;
+  box-shadow: 0 0 6px rgba(255,107,157,0.2);
 }
 
 .piano-wrapper {
@@ -113,7 +189,7 @@ body {
   padding: 0;
 }
 
-/* White keys */
+/* White keys — 8-bit pixel style */
 .white-keys {
   display: flex;
   position: relative;
@@ -121,11 +197,11 @@ body {
 }
 
 .white-key {
-  width: 60px;
-  height: 230px;
-  background: linear-gradient(180deg, #f8f9fa 0%, #e9eaed 100%);
-  border: 1px solid #c8c9cc;
-  border-radius: 0 0 6px 6px;
+  width: 58px;
+  height: 210px;
+  background: linear-gradient(180deg, #f0e8f8 0%, #e0d4ee 100%);
+  border: 2px solid #8a7aa0;
+  border-radius: 0;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -135,45 +211,46 @@ body {
   position: relative;
   margin-right: -1px;
   box-shadow:
-    0 2px 4px rgba(0,0,0,0.15),
-    inset 0 -2px 4px rgba(0,0,0,0.04);
+    2px 2px 0 rgba(0,0,0,0.2),
+    inset 0 -3px 6px rgba(0,0,0,0.06);
   transition:
-    background 0.08s ease,
-    box-shadow 0.08s ease,
-    transform 0.05s ease;
+    background 0.06s,
+    box-shadow 0.06s,
+    transform 0.04s;
+  image-rendering: pixelated;
 }
 
-.white-key:first-child { border-radius: 0 0 0 6px; }
-.white-key:last-child { border-radius: 0 0 6px 0; }
+.white-key:first-child { border-left-width: 2px; }
+.white-key:last-child { border-right-width: 2px; }
 
 .white-key:hover {
-  background: linear-gradient(180deg, #fff 0%, #f0f1f5 100%);
+  background: linear-gradient(180deg, #f8f0ff 0%, #e8daf4 100%);
 }
 
 .white-key.active {
-  background: linear-gradient(180deg, #cce5ff 0%, #99ccff 100%);
-  transform: translateY(2px);
+  background: linear-gradient(180deg, #B3E4FF 0%, #6BC5FF 100%);
+  transform: translateY(3px);
   box-shadow:
-    0 1px 2px rgba(0,0,0,0.1),
-    inset 0 -1px 3px rgba(0,100,200,0.2);
-  border-color: #7ab8ff;
+    1px 1px 0 rgba(0,0,0,0.2),
+    inset 0 -1px 0 rgba(107,197,255,0.4),
+    0 0 12px rgba(107,197,255,0.4);
+  border-color: #4a8abf;
 }
 
 .white-key .key-label {
-  color: #8899aa;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  color: #6a5a80;
+  font-size: 9px;
+  font-family: 'Press Start 2P', monospace;
+  letter-spacing: 0;
 }
-
-.white-key.active .key-label {
-  color: #3a6cf5;
-}
+.white-key.active .key-label { color: #3a5a8f; }
 
 .white-key .note-label {
-  color: #bbb;
-  font-size: 10px;
-  margin-top: 2px;
+  color: #9a8ab0;
+  font-size: 7px;
+  font-family: 'Press Start 2P', monospace;
+  margin-top: 4px;
+  letter-spacing: 0;
 }
 
 /* Black keys */
@@ -182,18 +259,18 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 155px;
+  height: 138px;
   pointer-events: none;
   z-index: 2;
 }
 
 .black-key {
   position: absolute;
-  width: 38px;
-  height: 150px;
-  background: linear-gradient(180deg, #2d2d3a 0%, #1a1a28 100%);
-  border: 1px solid #0a0a12;
-  border-radius: 0 0 5px 5px;
+  width: 36px;
+  height: 134px;
+  background: linear-gradient(180deg, #2a1a4e 0%, #1a0e2e 100%);
+  border: 2px solid #0a0520;
+  border-radius: 0;
   cursor: pointer;
   pointer-events: auto;
   display: flex;
@@ -202,111 +279,129 @@ body {
   justify-content: flex-end;
   padding-bottom: 6px;
   transition:
-    background 0.08s ease,
-    transform 0.05s ease;
+    background 0.06s,
+    transform 0.04s;
   box-shadow:
-    0 4px 8px rgba(0,0,0,0.4),
-    inset 0 -3px 4px rgba(255,255,255,0.05);
+    2px 2px 0 rgba(0,0,0,0.4),
+    inset 0 -3px 4px rgba(255,255,255,0.04);
 }
 
 .black-key:hover {
-  background: linear-gradient(180deg, #3d3d4a 0%, #252535 100%);
+  background: linear-gradient(180deg, #3a2a5e 0%, #2a1a3e 100%);
 }
 
 .black-key.active {
-  background: linear-gradient(180deg, #5b8cff 0%, #3a6cf5 100%);
+  background: linear-gradient(180deg, #FF85B3 0%, #FF6B9D 100%);
   transform: translateY(3px);
   box-shadow:
-    0 1px 3px rgba(0,0,0,0.3),
-    inset 0 -1px 2px rgba(255,255,255,0.15);
+    1px 1px 0 rgba(0,0,0,0.3),
+    inset 0 -1px 0 rgba(255,107,157,0.3),
+    0 0 12px rgba(255,107,157,0.4);
+  border-color: #cc5590;
 }
 
 .black-key .key-label {
-  color: #777;
-  font-size: 10px;
-  font-weight: 600;
+  color: #665a80;
+  font-size: 7px;
+  font-family: 'Press Start 2P', monospace;
 }
+.black-key.active .key-label { color: #ffcce0; }
 
-.black-key.active .key-label {
-  color: #cce;
-}
-
-/* Controls */
+/* Controls — 8-bit style */
 .controls {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 14px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .controls button {
-  padding: 5px 14px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 6px;
-  color: #ccc;
+  padding: 6px 16px;
+  background: #1e1a3e;
+  border: 3px solid #FF6B9D;
+  border-radius: 0;
+  color: #FF85B3;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 600;
-  transition: all 0.15s;
+  font-family: 'Press Start 2P', monospace;
+  box-shadow: 2px 2px 0 rgba(255,107,157,0.3);
+  transition: all 0.08s;
+  image-rendering: pixelated;
 }
 
 .controls button:hover {
-  background: rgba(255,255,255,0.15);
-  color: #fff;
+  background: #2d1b4e;
+  border-color: #6BC5FF;
+  color: #6BC5FF;
+  box-shadow: 1px 1px 0 rgba(107,197,255,0.3);
+  transform: translate(1px, 1px);
+}
+
+.controls button:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 .controls .octave-display {
-  color: #e2e8f0;
-  font-size: 15px;
-  font-weight: 700;
-  min-width: 55px;
+  color: #C084FC;
+  font-size: 10px;
+  font-family: 'Press Start 2P', monospace;
+  min-width: 70px;
   text-align: center;
+  text-shadow: 0 0 8px rgba(192,132,252,0.3);
 }
 
 .volume-slider {
   -webkit-appearance: none;
   appearance: none;
-  height: 4px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 2px;
+  height: 8px;
+  background: #2a1a3e;
+  border: 2px solid #FF6B9D;
+  border-radius: 0;
   outline: none;
   width: 80px;
 }
-
 .volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: #4facfe;
+  width: 12px;
+  height: 18px;
+  background: #6BC5FF;
+  border: 2px solid #4a8abf;
   cursor: pointer;
-  box-shadow: 0 0 5px rgba(79,172,254,0.4);
+  box-shadow: 0 0 6px rgba(107,197,255,0.4);
+  border-radius: 0;
 }
 
 .volume-label {
-  color: #8899aa;
-  font-size: 11px;
+  color: #B3E4FF;
+  font-size: 8px;
+  font-family: 'Press Start 2P', monospace;
 }
 
+/* Instrument select — pixel style */
 .instrument-select {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 6px;
-  color: #ccc;
-  padding: 5px 10px;
-  font-size: 12px;
+  background: #1e1a3e;
+  border: 3px solid #6BC5FF;
+  border-radius: 0;
+  color: #6BC5FF;
+  padding: 6px 10px;
+  font-size: 8px;
+  font-family: 'Press Start 2P', monospace;
   cursor: pointer;
   outline: none;
-  max-width: 190px;
+  max-width: 200px;
+  box-shadow: 2px 2px 0 rgba(107,197,255,0.2);
 }
-
 .instrument-select option {
-  background: #1a1a2e;
-  color: #ccc;
+  background: #1a1a3e;
+  color: #B3E4FF;
+}
+.instrument-select:hover {
+  border-color: #FF6B9D;
+  color: #FF85B3;
 }
 
 /* Status bar */
@@ -316,53 +411,132 @@ body {
   justify-content: center;
   margin-top: 14px;
   gap: 16px;
+  padding: 8px 18px;
+  border: 2px solid rgba(107,197,255,0.2);
+  background: rgba(26,26,62,0.5);
 }
 
 .status-bar .status {
-  color: #4facfe;
-  font-size: 12px;
-  font-weight: 500;
+  color: #FF85B3;
+  font-size: 8px;
+  font-family: 'Press Start 2P', monospace;
+  text-shadow: 0 0 6px rgba(255,133,179,0.3);
 }
 
 .status-bar .hint {
-  color: #556;
-  font-size: 11px;
+  color: #7a6a90;
+  font-size: 7px;
+  font-family: 'Press Start 2P', monospace;
+  letter-spacing: 0.5px;
 }
 
 .status-bar .hint kbd {
   display: inline-block;
-  padding: 1px 5px;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 3px;
+  padding: 2px 5px;
+  background: #2a1a3e;
+  border: 1px solid #6BC5FF;
+  border-radius: 0;
+  font-size: 7px;
+  font-family: 'Press Start 2P', monospace;
+  color: #B3E4FF;
+  margin: 0 2px;
+  box-shadow: 0 0 4px rgba(107,197,255,0.15);
+}
+
+/* ===== Top Navigation ===== */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: linear-gradient(180deg, #1a1a3e 0%, #16122a 100%);
+  border-bottom: 4px solid #6BC5FF;
+  box-shadow: 0 2px 16px rgba(107,197,255,0.15);
+  z-index: 1001;
+  font-family: 'Press Start 2P', monospace;
+}
+.top-nav .nav-brand {
+  color: #FF85B3;
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-shadow: 0 0 8px rgba(255,107,157,0.4);
+}
+.top-nav .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.top-nav .nav-links a {
+  color: #6BC5FF;
+  font-size: 8px;
+  text-decoration: none;
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  border: 2px solid transparent;
+  transition: all 0.1s;
+}
+.top-nav .nav-links a:hover {
+  border-color: #FF6B9D;
+  color: #FF85B3;
+}
+#lang-toggle {
+  background: #1e1a3e;
+  border: 3px solid #FF6B9D;
+  border-radius: 0;
+  color: #FF85B3;
+  cursor: pointer;
+  font-family: 'Press Start 2P', monospace;
   font-size: 10px;
-  font-family: monospace;
-  color: #889;
-  margin: 0 1px;
+  padding: 6px 14px;
+  transition: all 0.08s;
+  box-shadow: 2px 2px 0 rgba(255,107,157,0.3);
+  image-rendering: pixelated;
+}
+#lang-toggle:hover {
+  background: #2d1b4e;
+  border-color: #6BC5FF;
+  color: #6BC5FF;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(107,197,255,0.3);
 }
 </style>
 </head>
 <body>
 
+<nav class="top-nav">
+  <div class="nav-brand">♪ M U S I O N</div>
+  <div class="nav-links">
+    <a href="#" data-lang="navHome">首页</a>
+    <a href="https://github.com/DandexZ/musion" target="_blank" data-lang="navGithub">GitHub</a>
+    <button id="lang-toggle" data-lang="langBtn">EN</button>
+  </div>
+</nav>
+
 <div class="header">
-  <h1><span>MIDI</span> 钢琴</h1>
-  <div class="subtitle">musion · FluidR3_GM · 基于 MIDI.js</div>
+  <h1><span data-lang="h1Span">MIDI</span> <span data-lang="h1Text">钢琴</span></h1>
+  <div class="subtitle" data-lang="subtitle">musion · FluidR3_GM · 基于 MIDI.js</div>
   <div id="loading-bar-container">
     <div id="loading-bar"></div>
   </div>
-  <div id="loading-text">正在加载音色库...</div>
+  <div id="loading-text" data-lang="loadingSoundfont">正在加载音色库...</div>
 </div>
 
 <div class="controls">
   <button id="octave-down">−</button>
   <span class="octave-display" id="octave-display">C3–B5</span>
   <button id="octave-up">+</button>
-  <span class="volume-label">音量</span>
+  <span class="volume-label" data-lang="volume">音量</span>
   <input type="range" class="volume-slider" id="volume-slider" min="0" max="127" value="100">
   <select class="instrument-select" id="instrument-select"></select>
 </div>
 
 <div class="piano-container">
+  <div class="brand-tag">♪ M U S I O N ♪</div>
   <div class="piano-wrapper" id="piano-wrapper">
     <div class="white-keys" id="white-keys"></div>
     <div class="black-keys" id="black-keys"></div>
@@ -370,8 +544,8 @@ body {
 </div>
 
 <div class="status-bar">
-  <div class="status" id="status">就绪</div>
-  <div class="hint">↑↓ 八度 · 鼠标/键盘弹奏 · 55 种 GM 音色</div>
+    <div class="status" id="status" data-lang="statusReady">就绪</div>
+  <div class="hint" data-lang="hint">↑↓ 八度 · 鼠标/键盘弹奏 · 55 种 GM 音色</div>
 </div>
 
 <script>
@@ -386,25 +560,72 @@ body {
 
   var SOUNDFONT_URL = 'soundfont/FluidR3_GM/';
 
+  // ===== Translation System =====
+  var currentLang = 'zh';
+
+  var LANG = {
+    zh: {
+      title: 'Musion - MIDI 钢琴',
+      h1Span: 'MIDI',
+      h1Text: '钢琴',
+      subtitle: 'musion · FluidR3_GM · 基于 MIDI.js',
+      loadingSoundfont: '正在加载音色库...',
+      volume: '音量',
+      statusReady: '就绪',
+      hint: '\u2191\u2193 八度 \u00b7 鼠标/键盘弹奏 \u00b7 55 种 GM 音色',
+      loadingFile: '加载音色文件...',
+      loadingProgress: '加载中... ',
+      loaded: '\u2713 完成',
+      readyPrefix: '就绪 \u00b7 ',
+      navHome: '\u9996\u9875',
+      navGithub: 'GitHub',
+      langBtn: 'EN'
+    },
+    en: {
+      title: 'Musion - MIDI Piano',
+      h1Span: 'MIDI',
+      h1Text: 'Piano',
+      subtitle: 'musion \u00b7 FluidR3_GM \u00b7 Powered by MIDI.js',
+      loadingSoundfont: 'Loading soundfont...',
+      volume: 'Volume',
+      statusReady: 'Ready',
+      hint: '\u2191\u2193 Octave \u00b7 Mouse/Keyboard \u00b7 55 GM Instruments',
+      loadingFile: 'Loading sound file...',
+      loadingProgress: 'Loading... ',
+      loaded: '\u2713 Done',
+      readyPrefix: 'Ready \u00b7 ',
+      navHome: 'Home',
+      navGithub: 'GitHub',
+      langBtn: '\u4e2d'
+    }
+  };
+
+  function t(key) {
+    return LANG[currentLang][key] || LANG['zh'][key] || key;
+  }
+
+  // Apply current language to all data-lang elements + document title
+  function applyLang() {
+    var els = document.querySelectorAll('[data-lang]');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      var key = el.getAttribute('data-lang');
+      el.textContent = t(key);
+    }
+    document.title = t('title');
+    rebuildInstrumentOptions();
+  }
+
   // --- Keyboard → semitone offset (0-35 = 3 full octaves) ---
-  // 分组: "zxcvbnm" 第一组 → / "黑键对应白键上方"
-  // 各键严格一一对应,无重复
   var KEY_MAP = {
-    // 第一组 (0-11): zxcvbnm 白键 + home row 黑键 (白键上方)
-    // C=z, C#=s, D=x, D#=d, E=c, F=v, F#=g, G=b, G#=h, A=n, A#=j, B=m
     'z': 0,  's': 1,   'x': 2,   'd': 3,   'c': 4,
     'v': 5,  'g': 6,   'b': 7,   'h': 8,   'n': 9,   'j': 10,  'm': 11,
-    // 第二组 (12-23): ,./qwer 白键 + 对应上方黑键
-    // ,下方→l(C#), .下方→;(D#), q上方→2(F#), w上方→3(G#), e上方→4(A#)
     ',': 12, 'l': 13,  '.': 14,  ';': 15,  '/': 16,
     'q': 17, '2': 18,  'w': 19,  '3': 20,  'e': 21,  '4': 22,  'r': 23,
-    // 第三组 (24-35): tyuiop[ 白键 + 对应上方黑键
-    // t上方→6(C#), y上方→7(D#), i上方→9(F#), o上方→0(G#), p上方→-(A#)
     't': 24, '6': 25,  'y': 26,  '7': 27,  'u': 28,
     'i': 29, '9': 30,  'o': 31,  '0': 32,  'p': 33,  '-': 34,  '[': 35
   };
 
-  // --- Reverse map: offset → keyboard label ---
   var OFFSET_TO_KEY = {
      0: 'z',  1: 's',  2: 'x',  3: 'd',   4: 'c',
      5: 'v',  6: 'g',  7: 'b',  8: 'h',   9: 'n',  10: 'j',  11: 'm',
@@ -428,72 +649,80 @@ body {
   var activeNotes = {};
   var octaveOffset = 0;
 
-  // --- Instruments ---
+  // --- Instruments (双语: label=中文, en=英文) ---
   var INSTRUMENTS = [
-    { value: 'acoustic_grand_piano',       label: '大钢琴' },
-    { value: 'bright_acoustic_piano',      label: '亮音钢琴' },
-    { value: 'electric_grand_piano',       label: '电钢琴' },
-    { value: 'honkytonk_piano',            label: '酒吧钢琴' },
-    { value: 'electric_piano_1',           label: '电钢琴1' },
-    { value: 'electric_piano_2',           label: '电钢琴2' },
-    { value: 'harpsichord',                label: '大键琴' },
-    { value: 'clavinet',                   label: '古钢琴' },
-    { value: 'celesta',                    label: '钢片琴' },
-    { value: 'glockenspiel',               label: '钟琴' },
-    { value: 'music_box',                  label: '音乐盒' },
-    { value: 'vibraphone',                 label: '颤音琴' },
-    { value: 'marimba',                    label: '马林巴' },
-    { value: 'xylophone',                  label: '木琴' },
-    { value: 'tubular_bells',              label: '管钟' },
-    { value: 'dulcimer',                   label: '扬琴' },
-    { value: 'drawbar_organ',              label: '拉杆风琴' },
-    { value: 'percussive_organ',           label: '敲击风琴' },
-    { value: 'rock_organ',                 label: '摇滚风琴' },
-    { value: 'church_organ',               label: '教堂风琴' },
-    { value: 'accordion',                  label: '手风琴' },
-    { value: 'acoustic_guitar_nylon',      label: '尼龙弦吉他' },
-    { value: 'acoustic_guitar_steel',      label: '钢弦吉他' },
-    { value: 'electric_guitar_jazz',       label: '爵士电吉他' },
-    { value: 'electric_guitar_clean',      label: '清音电吉他' },
-    { value: 'overdriven_guitar',          label: '过载吉他' },
-    { value: 'distortion_guitar',          label: '失真吉他' },
-    { value: 'acoustic_bass',              label: '原声贝斯' },
-    { value: 'electric_bass_finger',       label: '指弹贝斯' },
-    { value: 'violin',                     label: '小提琴' },
-    { value: 'viola',                      label: '中提琴' },
-    { value: 'cello',                      label: '大提琴' },
-    { value: 'contrabass',                 label: '低音提琴' },
-    { value: 'pizzicato_strings',          label: '拨弦弦乐' },
-    { value: 'orchestral_harp',            label: '竖琴' },
-    { value: 'string_ensemble_1',          label: '弦乐合奏' },
-    { value: 'trumpet',                    label: '小号' },
-    { value: 'trombone',                   label: '长号' },
-    { value: 'french_horn',                label: '圆号' },
-    { value: 'brass_section',              label: '铜管组' },
-    { value: 'soprano_sax',                label: '高音萨克斯' },
-    { value: 'alto_sax',                   label: '中音萨克斯' },
-    { value: 'tenor_sax',                  label: '次中音萨克斯' },
-    { value: 'oboe',                       label: '双簧管' },
-    { value: 'clarinet',                   label: '单簧管' },
-    { value: 'piccolo',                    label: '短笛' },
-    { value: 'flute',                      label: '长笛' },
-    { value: 'pan_flute',                  label: '排箫' },
-    { value: 'whistle',                    label: '口哨' },
-    { value: 'lead_1_square',             label: '方波主音' },
-    { value: 'lead_2_sawtooth',           label: '锯齿主音' },
-    { value: 'pad_1_new_age',              label: '新世纪氛围' },
-    { value: 'pad_2_warm',                 label: '温暖氛围' },
-    { value: 'fx_1_rain',                  label: '雨声效果' },
-    { value: 'synth_drum',                 label: '合成鼓' }
+    { value: 'acoustic_grand_piano',       label: '\u5927\u94a2\u7434', en: 'Grand Piano' },
+    { value: 'bright_acoustic_piano',      label: '\u4eae\u97f3\u94a2\u7434', en: 'Bright Piano' },
+    { value: 'electric_grand_piano',       label: '\u7535\u94a2\u7434', en: 'Elec. Grand Piano' },
+    { value: 'honkytonk_piano',            label: '\u9152\u5427\u94a2\u7434', en: 'Honky-tonk Piano' },
+    { value: 'electric_piano_1',           label: '\u7535\u94a2\u74341', en: 'Elec. Piano 1' },
+    { value: 'electric_piano_2',           label: '\u7535\u94a2\u74342', en: 'Elec. Piano 2' },
+    { value: 'harpsichord',                label: '\u5927\u952e\u7434', en: 'Harpsichord' },
+    { value: 'clavinet',                   label: '\u53e4\u94a2\u7434', en: 'Clavinet' },
+    { value: 'celesta',                    label: '\u94a2\u7247\u7434', en: 'Celesta' },
+    { value: 'glockenspiel',               label: '\u949f\u7434', en: 'Glockenspiel' },
+    { value: 'music_box',                  label: '\u97f3\u4e50\u76d2', en: 'Music Box' },
+    { value: 'vibraphone',                 label: '\u98a4\u97f3\u7434', en: 'Vibraphone' },
+    { value: 'marimba',                    label: '\u9a6c\u6797\u5df4', en: 'Marimba' },
+    { value: 'xylophone',                  label: '\u6728\u7434', en: 'Xylophone' },
+    { value: 'tubular_bells',              label: '\u7ba1\u949f', en: 'Tubular Bells' },
+    { value: 'dulcimer',                   label: '\u626c\u7434', en: 'Dulcimer' },
+    { value: 'drawbar_organ',              label: '\u62c9\u6746\u98ce\u7434', en: 'Drawbar Organ' },
+    { value: 'percussive_organ',           label: '\u6572\u51fb\u98ce\u7434', en: 'Perc. Organ' },
+    { value: 'rock_organ',                 label: '\u6447\u6eda\u98ce\u7434', en: 'Rock Organ' },
+    { value: 'church_organ',               label: '\u6559\u5802\u98ce\u7434', en: 'Church Organ' },
+    { value: 'accordion',                  label: '\u624b\u98ce\u7434', en: 'Accordion' },
+    { value: 'acoustic_guitar_nylon',      label: '\u5c3c\u9f99\u5f26\u5409\u4ed6', en: 'Nylon Guitar' },
+    { value: 'acoustic_guitar_steel',      label: '\u94a2\u5f26\u5409\u4ed6', en: 'Steel Guitar' },
+    { value: 'electric_guitar_jazz',       label: '\u7235\u58eb\u7535\u5409\u4ed6', en: 'Jazz Guitar' },
+    { value: 'electric_guitar_clean',      label: '\u6e05\u97f3\u7535\u5409\u4ed6', en: 'Clean Guitar' },
+    { value: 'overdriven_guitar',          label: '\u8fc7\u8f7d\u5409\u4ed6', en: 'Overdrive Guitar' },
+    { value: 'distortion_guitar',          label: '\u5931\u771f\u5409\u4ed6', en: 'Dist. Guitar' },
+    { value: 'acoustic_bass',              label: '\u539f\u58f0\u8d1d\u65af', en: 'Acoustic Bass' },
+    { value: 'electric_bass_finger',       label: '\u6307\u5f39\u8d1d\u65af', en: 'Finger Bass' },
+    { value: 'violin',                     label: '\u5c0f\u63d0\u7434', en: 'Violin' },
+    { value: 'viola',                      label: '\u4e2d\u63d0\u7434', en: 'Viola' },
+    { value: 'cello',                      label: '\u5927\u63d0\u7434', en: 'Cello' },
+    { value: 'contrabass',                 label: '\u4f4e\u97f3\u63d0\u7434', en: 'Contrabass' },
+    { value: 'pizzicato_strings',          label: '\u62e8\u5f26\u5f26\u4e50', en: 'Pizzicato' },
+    { value: 'orchestral_harp',            label: '\u7ad6\u7434', en: 'Harp' },
+    { value: 'string_ensemble_1',          label: '\u5f26\u4e50\u5408\u594f', en: 'String Ens.' },
+    { value: 'trumpet',                    label: '\u5c0f\u53f7', en: 'Trumpet' },
+    { value: 'trombone',                   label: '\u957f\u53f7', en: 'Trombone' },
+    { value: 'french_horn',                label: '\u5706\u53f7', en: 'French Horn' },
+    { value: 'brass_section',              label: '\u94dc\u7ba1\u7ec4', en: 'Brass Section' },
+    { value: 'soprano_sax',                label: '\u9ad8\u97f3\u8428\u514b\u65af', en: 'Soprano Sax' },
+    { value: 'alto_sax',                   label: '\u4e2d\u97f3\u8428\u514b\u65af', en: 'Alto Sax' },
+    { value: 'tenor_sax',                  label: '\u6b21\u4e2d\u97f3\u8428\u514b\u65af', en: 'Tenor Sax' },
+    { value: 'oboe',                       label: '\u53cc\u7bf3\u7ba1', en: 'Oboe' },
+    { value: 'clarinet',                   label: '\u5355\u7bf3\u7ba1', en: 'Clarinet' },
+    { value: 'piccolo',                    label: '\u77ed\u7b1b', en: 'Piccolo' },
+    { value: 'flute',                      label: '\u957f\u7b1b', en: 'Flute' },
+    { value: 'pan_flute',                  label: '\u6392\u7bab', en: 'Pan Flute' },
+    { value: 'whistle',                    label: '\u53e3\u54e8', en: 'Whistle' },
+    { value: 'lead_1_square',             label: '\u65b9\u6ce2\u4e3b\u97f3', en: 'Square Lead' },
+    { value: 'lead_2_sawtooth',           label: '\u952f\u9f7f\u4e3b\u97f3', en: 'Sawtooth Lead' },
+    { value: 'pad_1_new_age',              label: '\u65b0\u4e16\u7eaa\u6c1b\u56f4', en: 'New Age Pad' },
+    { value: 'pad_2_warm',                 label: '\u6e29\u6696\u6c1b\u56f4', en: 'Warm Pad' },
+    { value: 'fx_1_rain',                  label: '\u96e8\u58f0\u6548\u679c', en: 'Rain FX' },
+    { value: 'synth_drum',                 label: '\u5408\u6210\u9f13', en: 'Synth Drum' }
   ];
 
-  // Populate
-  INSTRUMENTS.forEach(function(inst) {
-    var opt = document.createElement('option');
-    opt.value = inst.value;
-    opt.textContent = inst.label;
-    instrumentSelect.appendChild(opt);
-  });
+  function getInstLabel(inst) {
+    return currentLang === 'zh' ? inst.label : (inst.en || inst.label);
+  }
+
+  function rebuildInstrumentOptions() {
+    var selectedVal = instrumentSelect.value;
+    instrumentSelect.innerHTML = '';
+    INSTRUMENTS.forEach(function(inst) {
+      var opt = document.createElement('option');
+      opt.value = inst.value;
+      opt.textContent = getInstLabel(inst);
+      instrumentSelect.appendChild(opt);
+    });
+    instrumentSelect.value = selectedVal;
+  }
 
   // --- Helpers ---
   function getNoteName(note) {
@@ -515,7 +744,7 @@ body {
     blackKeysEl.innerHTML = '';
 
     var whiteKeyWidth = 60;
-    var keyStep = whiteKeyWidth - 1; // margin-right: -1px 导致有效步进 59px
+    var keyStep = whiteKeyWidth - 1;
 
     // White keys
     for (var n = startNote; n <= endNote; n++) {
@@ -547,7 +776,7 @@ body {
       whiteKeysEl.appendChild(el);
     }
 
-    // Black keys — positioning FIX: tn < prevWhite (not <=)
+    // Black keys
     for (var n2 = startNote; n2 <= endNote; n2++) {
       if (BLACK_SEMIS.indexOf(n2 % 12) < 0) continue;
 
@@ -642,7 +871,7 @@ body {
     octaveOffset = newOffset;
     var start = START_NOTE + octaveOffset * 12;
     var end = END_NOTE + octaveOffset * 12;
-    octaveDisplay.textContent = NOTE_NAMES[start % 12] + getOctave(start) + '–' + NOTE_NAMES[end % 12] + getOctave(end);
+    octaveDisplay.textContent = NOTE_NAMES[start % 12] + getOctave(start) + '\u2013' + NOTE_NAMES[end % 12] + getOctave(end);
     buildPiano(start, end);
   }
 
@@ -658,12 +887,14 @@ body {
   });
 
   function loadInstrument(inst) {
-    var label = (INSTRUMENTS.filter(function(i) { return i.value === inst; })[0] || {}).label || inst;
-    statusEl.textContent = '加载 ' + label + '...';
+    var instObj = INSTRUMENTS.filter(function(i) { return i.value === inst; })[0] || {};
+    var label = getInstLabel(instObj) || inst;
+    var loadingPrefix = currentLang === 'zh' ? '\u52a0\u8f7d ' : 'Loading ';
+    statusEl.textContent = loadingPrefix + label + '...';
     loadingContainer.style.opacity = 1;
     loadingText.classList.remove('loaded');
     loadingBar.style.width = '0%';
-    loadingText.textContent = '加载音色文件...';
+    loadingText.textContent = t('loadingFile');
 
     MIDI.loadPlugin({
       soundfontUrl: SOUNDFONT_URL,
@@ -672,25 +903,41 @@ body {
       onprogress: function(state, progress) {
         var pct = Math.round(progress * 100);
         loadingBar.style.width = pct + '%';
-        loadingText.textContent = '加载中... ' + pct + '%';
+        loadingText.textContent = t('loadingProgress') + pct + '%';
       },
       onsuccess: function() {
-        // 切换通道乐器号，确保发音用新音色
         var program = MIDI.GM.byName[inst].number;
         MIDI.programChange(0, program);
         loadingBar.style.width = '100%';
-        loadingText.textContent = '✓ 完成';
+        loadingText.textContent = t('loaded');
         loadingText.classList.add('loaded');
-        statusEl.textContent = '就绪 · ' + label;
+        statusEl.textContent = t('readyPrefix') + label;
         setTimeout(function() { loadingContainer.style.opacity = 0; }, 1500);
       }
     });
   }
 
+  // --- Language toggle ---
+  document.getElementById('lang-toggle').addEventListener('click', function() {
+    currentLang = currentLang === 'zh' ? 'en' : 'zh';
+    applyLang();
+    // Update status bar instrument label
+    var curInst = instrumentSelect.value;
+    if (curInst) {
+      var instObj = INSTRUMENTS.filter(function(i) { return i.value === curInst; })[0] || {};
+      var label = getInstLabel(instObj) || curInst;
+      var st = statusEl.textContent;
+      if (st.indexOf('\u5c31\u7eea') === 0 || st.indexOf('Ready') === 0) {
+        statusEl.textContent = t('readyPrefix') + label;
+      }
+    }
+  });
+
   // --- Init ---
   function init() {
     try { MIDI.setVolume(0, +volumeSlider.value); } catch(e) {}
     buildPiano(START_NOTE, END_NOTE);
+    applyLang(); // ensure initial language state
     loadInstrument('acoustic_grand_piano');
   }
 
