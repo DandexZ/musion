@@ -1,0 +1,60 @@
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: linear-gradient(180deg, #1a1a3e 0%, #16122a 100%);
+  border-bottom: 4px solid #6BC5FF;
+  box-shadow: 0 2px 16px rgba(107,197,255,0.15);
+  z-index: 1001;
+  font-family: 'Press Start 2P', monospace;
+}
+.top-nav .nav-brand {
+  color: #FF85B3;
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-shadow: 0 0 8px rgba(255,107,157,0.4);
+}
+.top-nav .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.top-nav .nav-links a {
+  color: #6BC5FF;
+  font-size: 8px;
+  text-decoration: none;
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  border: 2px solid transparent;
+  transition: all 0.1s;
+}
+.top-nav .nav-links a:hover {
+  border-color: #FF6B9D;
+  color: #FF85B3;
+}
+#lang-toggle {
+  background: #1e1a3e;
+  border: 3px solid #FF6B9D;
+  border-radius: 0;
+  color: #FF85B3;
+  cursor: pointer;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 6px 14px;
+  transition: all 0.08s;
+  box-shadow: 2px 2px 0 rgba(255,107,157,0.3);
+  image-rendering: pixelated;
+}
+#lang-toggle:hover {
+  background: #2d1b4e;
+  border-color: #6BC5FF;
+  color: #6BC5FF;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(107,197,255,0.3);
+}

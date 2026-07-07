@@ -1,4 +1,4 @@
-# musion 🎹
+# MUSION 🎹
 
 基于 [MIDI.js](https://github.com/mudcube/MIDI.js) 的 Web MIDI 钢琴，支持 55 种 GM 音色、键盘/鼠标弹奏、八度切换。
 

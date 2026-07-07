@@ -1,0 +1,116 @@
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+  padding: 14px 24px;
+  border: 3px solid #FF6B9D;
+  background: rgba(26,26,62,0.7);
+  box-shadow:
+    0 0 12px rgba(255,107,157,0.3),
+    inset 0 0 20px rgba(107,197,255,0.08);
+}
+.header::before, .header::after {
+  content: '◆';
+  position: absolute;
+  color: #6BC5FF;
+  font-size: 10px;
+  text-shadow: 0 0 6px rgba(107,197,255,0.6);
+}
+.header::before { top: -8px; left: 12px; }
+.header::after { bottom: -8px; right: 12px; }
+
+.header h1 {
+  color: #FF85B3;
+  font-size: 22px;
+  letter-spacing: 3px;
+  text-shadow:
+    0 0 10px rgba(255,107,157,0.5),
+    3px 3px 0 #2d1b4e,
+    -1px -1px 0 rgba(107,197,255,0.3);
+}
+.header h1 span {
+  color: #6BC5FF;
+  text-shadow:
+    0 0 10px rgba(107,197,255,0.5),
+    3px 3px 0 #2d1b4e;
+}
+
+.header .subtitle {
+  color: #C084FC;
+  font-size: 8px;
+  margin-top: 10px;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(192,132,252,0.3);
+}
+
+#loading-bar-container {
+  width: 340px;
+  max-width: 80vw;
+  height: 14px;
+  background: #2a1a3e;
+  border: 3px solid #FF6B9D;
+  margin: 14px auto 0;
+  overflow: hidden;
+  transition: opacity 0.4s;
+  box-shadow: 0 0 8px rgba(255,107,157,0.25);
+  padding: 2px;
+}
+
+#loading-bar {
+  height: 100%;
+  width: 0%;
+  background: repeating-linear-gradient(
+    90deg,
+    #6BC5FF 0px, #FF6B9D 8px,
+    #6BC5FF 8px, #FF6B9D 16px
+  );
+  transition: width 0.2s ease;
+  image-rendering: pixelated;
+}
+
+#loading-text {
+  color: #B3E4FF;
+  font-size: 8px;
+  text-align: center;
+  margin-top: 8px;
+  text-shadow: 0 0 6px rgba(107,197,255,0.3);
+}
+#loading-text.loaded { color: #FF85B3; text-shadow: 0 0 6px rgba(255,133,179,0.5); }
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  gap: 16px;
+  padding: 8px 18px;
+  border: 2px solid rgba(107,197,255,0.2);
+  background: rgba(26,26,62,0.5);
+}
+
+.status-bar .status {
+  color: #FF85B3;
+  font-size: 8px;
+  font-family: 'Press Start 2P', monospace;
+  text-shadow: 0 0 6px rgba(255,133,179,0.3);
+}
+
+.status-bar .hint {
+  color: #7a6a90;
+  font-size: 7px;
+  font-family: 'Press Start 2P', monospace;
+  letter-spacing: 0.5px;
+}
+
+.status-bar .hint kbd {
+  display: inline-block;
+  padding: 2px 5px;
+  background: #2a1a3e;
+  border: 1px solid #6BC5FF;
+  border-radius: 0;
+  font-size: 7px;
+  font-family: 'Press Start 2P', monospace;
+  color: #B3E4FF;
+  margin: 0 2px;
+  box-shadow: 0 0 4px rgba(107,197,255,0.15);
+}
